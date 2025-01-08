@@ -14,7 +14,7 @@ Usage
 bash
 
 ## Clone the repository
-git clone https://github.com/your-username/password-cracking-suite.git
+git clone https://github.com/hak193/Password-Cracking-Suite
 cd password-cracking-suite
 
 ### Install dependencies
