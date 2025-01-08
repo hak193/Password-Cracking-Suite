@@ -1,0 +1,31 @@
+import pycuda.driver as cuda
+import pycuda.autoinit
+from pycuda.compiler import SourceModule
+import numpy as np
+
+# Load CUDA kernel
+with open('cuda_md5.cu', 'r') as f:
+    kernel_code = f.read()
+
+mod = SourceModule(kernel_code)
+md5_kernel = mod.get_function("md5_kernel")
+
+def md5_gpu(input_data):
+    input_data = np.array(input_data, dtype=np.chararray)
+    input_gpu = cuda.mem_alloc(input_data.nbytes)
+    output_gpu = cuda.mem_alloc(input_data.nbytes)
+    cuda.memcpy_htod(input_gpu, input_data)
+
+    md5_kernel(input_gpu, output_gpu, np.int32(len(input_data)))
+
+    output_data = np.empty_like(input_data)
+    cuda.memcpy_dtoh(output_data, output_gpu)
+
+    return output_data
+
+# Example usage
+if __name__ == "__main__":
+    input_data = ["password", "123456", "abcdef"]
+    hashed_data = md5_gpu(input_data)
+    for i, hash in enumerate(hashed_data):
+        print(f"Input: {input_data[i]} -> MD5 Hash: {hash}")
