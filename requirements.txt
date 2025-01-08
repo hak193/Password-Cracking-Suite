@@ -1,0 +1,7 @@
+hashlib
+itertools
+numpy
+pandas
+scipy
+tensorflow
+pycuda
